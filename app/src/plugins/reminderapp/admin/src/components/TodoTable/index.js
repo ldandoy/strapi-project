@@ -16,6 +16,7 @@ import { IconButton } from "@strapi/design-system/IconButton";
 import { VisuallyHidden } from "@strapi/design-system/VisuallyHidden";
 import { BaseCheckbox } from "@strapi/design-system/BaseCheckbox";
 import { TextInput } from "@strapi/design-system/TextInput";
+import { Avatar } from '@strapi/design-system/Avatar';
 import Pencil from "@strapi/icons/Pencil";
 import Trash from "@strapi/icons/Trash";
 import Plus from "@strapi/icons/Plus";
@@ -59,6 +60,8 @@ export default function TodoTable({
   editTodo,
   setShowModal,
 }) {
+  console.log(todoData);
+
   return (
     <Box
       background="neutral0"
@@ -84,6 +87,10 @@ export default function TodoTable({
 
             <Th>
               <Typography variant="sigma">Todo</Typography>
+            </Th>
+
+            <Th>
+              <Typography variant="sigma">Image</Typography>
             </Th>
 
             <Th>
@@ -117,6 +124,22 @@ export default function TodoTable({
                   ) : (
                     <Typography textColor="neutral800">{todo.name}</Typography>
                   )}
+                </Td>
+
+                <Td>
+                    { todo.image && todo.image.formats && todo.image.formats.thumbnail ? (
+                      <Avatar src={ todo.image.formats.thumbnail.url } alt={todo.name} preview />
+                    ) : (
+                      <>
+                        {
+                          todo.image ? (
+                            <Avatar src={ todo.image.url } alt={todo.name} preview />
+                          ) : (
+                            <Typography textColor="neutral800">-</Typography>
+                          )
+                        }
+                      </>
+                    )}
                 </Td>
 
                 <Td>

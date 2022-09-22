@@ -7,11 +7,18 @@ import {
   ModalFooter,
   Typography,
   Button,
-  TextInput,
+  TextInput
 } from "@strapi/design-system";
 
+import { useLibrary } from '@strapi/helper-plugin';
+
+
 export default function TodoModal({ setShowModal, addTodo }) {
+  const { fields: { media: MediaLibraryInput } } = useLibrary();
+
   const [name, setName] = useState("");
+  const [media, setMedia] = useState([]);
+
 
   const handleSubmit = async (e) => {
     // Prevent submitting parent form
@@ -19,7 +26,7 @@ export default function TodoModal({ setShowModal, addTodo }) {
     e.stopPropagation();
 
     try {
-      await addTodo({ name: name });
+      await addTodo({ name: name, image: media });
       setShowModal(false);
     } catch (e) {
       console.log("error", e);
@@ -58,6 +65,15 @@ export default function TodoModal({ setShowModal, addTodo }) {
           error={getError()}
           onChange={(e) => setName(e.target.value)}
           value={name}
+        />
+
+        <MediaLibraryInput
+          name="custom-media-input"
+          intlLabel={{ id: 'custom-media-input.label', defaultMessage: 'Custom media input usage' }}
+          onChange={(event) => setMedia(event.target.value)}
+          attribute={{ allowedTypes: ['videos', 'files', 'images', 'audios'] }}
+          multiple={true}
+          value={media}
         />
       </ModalBody>
 

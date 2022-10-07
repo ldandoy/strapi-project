@@ -1,0 +1,17 @@
+FROM node:lts
+
+WORKDIR /app
+
+COPY /app/package.json ./
+
+ENV PATH /app/node_modules/.bin:$PATH
+
+RUN npm install -g npm@latest
+
+RUN yarn install
+
+COPY app ./
+
+EXPOSE 1337 8000
+
+CMD ["yarn", "develop", "--watch-admin"]

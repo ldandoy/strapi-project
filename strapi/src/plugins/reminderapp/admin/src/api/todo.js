@@ -2,7 +2,7 @@ import { request } from "@strapi/helper-plugin";
 
 const todoRequests = {
   getAllTodos: async () => {
-    return await request("/reminderapp/find", {
+    return await request("/reminderapp/find?populate=%2A", {
       method: "GET",
     });
   },

@@ -3,13 +3,23 @@ services:
   strapi:        
     build: 
       context: .
-      dockerfile: ./node/Dockerfile
+      dockerfile: ./node/Dockerfile-strapi
     volumes:
-      - ./app:/app
-      - /app/node_modules
+      - ./strapi:/app
     ports:            
       - "1337:1337"
       - "8000:8000"
+    networks:
+      - strapi-project
+
+  front:
+    build: 
+      context: .
+      dockerfile: ./node/Dockerfile-front
+    volumes:
+      - ./front:/app
+    ports:            
+      - "3000:3000"
     networks:
       - strapi-project
 

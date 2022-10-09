@@ -1,8 +1,9 @@
-import React, {useState, FormEvent, ChangeEvent} from 'react'
-import { useNavigate } from "react-router-dom";
+import React, {useState, FormEvent, ChangeEvent, useContext} from 'react'
+import { useNavigate } from "react-router-dom"
 
 import {RegisterForm} from '../../types/Form'
 import {register} from '../../services/auth'
+import Auth from '../../contexts/Auth'
 
 const index = () => {
   const [form, setform] = useState<RegisterForm>({
@@ -12,6 +13,7 @@ const index = () => {
   })
   const [error, setError] = useState(null)
   let navigate = useNavigate()
+  const { setIsAuthenticated } = useContext(Auth)
 
   const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target
@@ -26,6 +28,10 @@ const index = () => {
       setError(res.error.message);
     } else {
       // SetUp the user
+      localStorage.setItem('token', res.jwt)
+      localStorage.setItem('user', JSON.stringify(res.user))
+
+      setIsAuthenticated(true)
       navigate("/login", { replace: true });
     }
   }
@@ -55,7 +61,7 @@ const index = () => {
         </div>
 
         <div>
-          <input type="submit" value="créer" />
+          <input type="submit" value="Créer votre compte" />
         </div>
       </form>
     </div>

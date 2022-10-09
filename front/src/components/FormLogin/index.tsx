@@ -1,8 +1,9 @@
-import React, {useState, FormEvent, ChangeEvent} from 'react'
-import { useNavigate } from "react-router-dom";
+import React, {useState, FormEvent, ChangeEvent, useContext} from 'react'
+import { useNavigate } from "react-router-dom"
 
 import {LoginForm} from '../../types/Form'
 import {login} from '../../services/auth'
+import Auth from '../../contexts/Auth'
 
 const index = () => {
     const [form, setform] = useState<LoginForm>({
@@ -11,6 +12,7 @@ const index = () => {
     })
     const [error, setError] = useState(null)
     let navigate = useNavigate()
+    const { setIsAuthenticated } = useContext(Auth)
 
     const onChangeInput = (event: ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event.target
@@ -26,8 +28,11 @@ const index = () => {
         } else {
           // SetUp the user
           localStorage.setItem('token', res.jwt)
-          localStorage.setItem('user', res.user)
-          navigate("/home", { replace: true });
+          localStorage.setItem('user', JSON.stringify(res.user))
+
+          setIsAuthenticated(true)
+
+          navigate("/", { replace: true });
         }
       }
 

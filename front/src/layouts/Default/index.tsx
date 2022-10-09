@@ -1,21 +1,40 @@
-import React, {useEffect, useState} from 'react'
-import { Link } from "react-router-dom";
+import { useContext, ReactNode, useEffect, useState } from 'react'
+import { Link, Navigate } from "react-router-dom";
 
-const index = ({children} : {children: JSX.Element}) => {
-    const [isAuth, setIsAuth] = useState<boolean>(false)
+import Auth from '../../contexts/Auth';
 
-    /*useEffect(() => {
-        is
-    }, [])*/
+const index = ({children, privated } : {children: ReactNode, privated?: boolean}) => {
+    const { isAuthenticated } = useContext(Auth)
+    const [showChildren, setShowchildren] = useState(false)
+
+    useEffect(() => {
+        setShowchildren(false)
+        if( !privated ) {
+            setShowchildren(true)
+        } else {
+            if (isAuthenticated) {
+                setShowchildren(true)
+            }
+        }
+    }, [children])
 
     return (<>
         <nav>
             <Link to="/">Home</Link>
-            <Link to="/register">Register</Link>
-            <Link to="/login">Login</Link>
+            { (!isAuthenticated && (
+                <>
+                    <Link to="/register">Register</Link>
+                    <Link to="/login">Login</Link>
+                </>
+            ) || (
+                <>
+                    <Link to="/profile">Mon compte</Link>
+                    <Link to="/logout">Déconnexion</Link>
+                </>
+            ))}
         </nav>
         <div className="container">
-            {children}
+            { showChildren ? children : <Navigate to="/login" replace={true} /> }
         </div>
     </>)
 }

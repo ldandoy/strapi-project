@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:16
 
 WORKDIR /app
 
@@ -9,6 +9,8 @@ ENV PATH /app/node_modules/.bin:$PATH
 RUN npm install -g npm@latest
 
 RUN yarn install
+
+RUN yarn add strapi -g
 
 COPY strapi ./
 

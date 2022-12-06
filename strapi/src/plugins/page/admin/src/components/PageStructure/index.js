@@ -4,12 +4,14 @@ import {
   Layout,
   TwoColsLayout,
   TextInput,
+  Typography,
   Box,
   Flex,
   Select,
   Option
 } from "@strapi/design-system";
 import { Plus } from "@strapi/icons";
+import { useLibrary } from '@strapi/helper-plugin';
 
 import './style.css';
 
@@ -17,16 +19,21 @@ export default function PageStructure({content}) {
   const [contentState, setContentState] = useState(content)
   const [editBlock, setEditBlock] = useState(null)
 
+  const { fields: { media: MediaLibraryInput } } = useLibrary();
+
   const handleClickRow = async (event, block, indexRow) => {
     setEditBlock({
       id: `row-${indexRow}`,
       type: 'row',
+      classe: "",
       block: block
     })
   }
 
   const handleClickCell = async (event, block, indexRow, indexCell) => {
     event.stopPropagation()
+
+    console.log(content)
 
     setEditBlock({
       indexCell: indexCell,
@@ -74,13 +81,31 @@ export default function PageStructure({content}) {
         hasRadius={true}
         padding={4}
         style={{ marginTop: "10px", marginLeft:"10%" }}
-
       >
         {contentState.blocks.map((block, indexRow) => ( <div key={`rowBlock-${indexRow}`}>
           <div className={block.direction == "row" ? `${block.classe} rowBlockRow` : `${block.classe} rowBlockCol`} onClick={(event) => handleClickRow(event, block, indexRow)}>
           {block.cells.map((cell, indexCell) => (
-            <div key={`rowBlock-${indexRow}-cellBlock-${indexCell}`} className={typeof cell.classe != 'undefined' ? `${cell.classe} cellBlock`: "cellBlock"} onClick={(event) => handleClickCell(event, block, indexRow, indexCell)}>
-              {cell.content}
+            <div 
+              key={`rowBlock-${indexRow}-cellBlock-${indexCell}`} 
+              className={typeof cell.classe != 'undefined' ? `${cell.classe} cellBlock`: "cellBlock"} 
+              onClick={(event) => handleClickCell(event, block, indexRow, indexCell)}
+            >
+              
+              {cell.type == "text" && cell.content}
+
+              { cell.type == "image" && cell.content != [] && cell.content.formats && cell.content.formats.thumbnail ? (
+                  <img src={ cell.content.formats.thumbnail.url } alt={cell.content.alternativeText} preview="true" />
+                ) : (
+                  <>
+                    {
+                      cell.content != [] ? (
+                        <img src={cell.content.url } alt={cell.content.alternativeText} preview="true" />
+                      ) : (
+                        <Typography textColor="neutral800">-</Typography>
+                      )
+                    }
+                  </>
+              )}
             </div>))}
 
             <div key={`rowBlock-${indexRow}-addCellBlock`} className="cellBlock">
@@ -89,7 +114,7 @@ export default function PageStructure({content}) {
                 variant="secondary"
                 startIcon={<Plus />}
                 className="addCellButton"
-                children="Add Column"
+                children="Add cell"
               />
             </div>
         </div>
@@ -196,8 +221,10 @@ export default function PageStructure({content}) {
               hint="Description line" 
               value={editBlock.block.cells[editBlock.indexCell].type} 
               onChange={(event) => {
+                console.log(event, editBlock.block)
                 let block = editBlock.block
                 block.cells[editBlock.indexCell].type = event
+                block.cells[editBlock.indexCell].content = []
                 setEditBlock({...editBlock, [block]: block})
               }}
             >
@@ -217,12 +244,19 @@ export default function PageStructure({content}) {
             >
             </TextInput>}
 
-            { editBlock.block.cells[editBlock.indexCell].type == 'image' && <TextInput
-              label="Image"
-              name='image'
-              value={editBlock.block.cells[editBlock.indexCell].content}
-            >
-            </TextInput>}
+            { editBlock.block.cells[editBlock.indexCell].type == 'image' && <MediaLibraryInput
+              name="custom-media-input"
+              intlLabel={{ id: 'custom-media-input.label', defaultMessage: 'Custom media input usage' }}
+              onChange={(event) => {
+                let block = editBlock.block
+                block.cells[editBlock.indexCell].content = event.target.value
+                setEditBlock({...editBlock, [block]: block})
+                console.log(block)
+              }}
+              attribute={{ allowedTypes: ['videos', 'files', 'images', 'audios'] }}
+              multiple={false}
+              value={ editBlock.block.cells[editBlock.indexCell] ? editBlock.block.cells[editBlock.indexCell].content : []}
+            />}
           </Box>
         </> }
       </>

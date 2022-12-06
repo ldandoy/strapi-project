@@ -10,7 +10,7 @@ RUN npm install -g npm@latest
 
 RUN yarn install
 
-RUN yarn add strapi -g
+RUN yarn add @strapi/strapi -g
 
 COPY strapi ./
 

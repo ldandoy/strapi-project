@@ -23,9 +23,6 @@
     "name": {
       "type": "string"
     },
-    "datetime": {
-      "type": "datetime"
-    },
     "date": {
       "type": "date"
     },
@@ -33,14 +30,19 @@
       "type": "boolean"
     },
     "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "description": {
+      "type": "richtext",
+      "required": false
     }
   }
 }

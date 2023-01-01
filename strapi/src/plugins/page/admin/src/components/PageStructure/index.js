@@ -8,7 +8,8 @@ import {
   Box,
   Flex,
   Select,
-  Option
+  Option,
+  Editor
 } from "@strapi/design-system";
 import { Plus } from "@strapi/icons";
 import { useLibrary } from '@strapi/helper-plugin';
@@ -232,17 +233,20 @@ export default function PageStructure({content}) {
               <Option value={'image'}>Image</Option>
             </Select>
             
-            { editBlock.block.cells[editBlock.indexCell].type == 'text' && <TextInput
-              label="Texte"
-              name='text'
-              value={editBlock.block.cells[editBlock.indexCell].content}
-              onChange={(event) => {
-                let block = editBlock.block
-                block.cells[editBlock.indexCell].content = event.target.value
-                setEditBlock({...editBlock, [block]: block})
-              }}
-            >
-            </TextInput>}
+            { editBlock.block.cells[editBlock.indexCell].type == 'text' && <>
+              <TextInput
+                label="Texte"
+                name='text'
+                value={editBlock.block.cells[editBlock.indexCell].content}
+                onChange={(event) => {
+                  let block = editBlock.block
+                  block.cells[editBlock.indexCell].content = event.target.value
+                  setEditBlock({...editBlock, [block]: block})
+                }}
+              >
+              </TextInput>
+              
+            </>}
 
             { editBlock.block.cells[editBlock.indexCell].type == 'image' && <MediaLibraryInput
               name="custom-media-input"

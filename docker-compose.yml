@@ -1,12 +1,12 @@
 version: '3.8'
-services:    
-  strapi:        
-    build: 
+services:
+  strapi:
+    build:
       context: .
       dockerfile: ./node/Dockerfile-strapi
     volumes:
       - ./strapi:/app
-    ports:            
+    ports:
       - "1337:1337"
       - "8000:8000"
     networks:
@@ -18,9 +18,8 @@ services:
       dockerfile: ./node/Dockerfile-strapi
     volumes:
       - ./front:/app
-    ports:            
-      - "1337:1337"
-      - "8000:8000"
+    ports:
+      - "3000:3000"
     networks:
       - strapi-project
 
